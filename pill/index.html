@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的药箱</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div id="app">
+        <div id="home-page" class="page active">
+            <div class="medicine-box">
+                <div class="box-icon">
+                    <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="30" y="70" width="140" height="100" rx="10" fill="#4CAF50" stroke="#388E3C" stroke-width="3"/>
+                        <rect x="20" y="60" width="160" height="30" rx="5" fill="#66BB6A" stroke="#388E3C" stroke-width="3"/>
+                        <rect x="85" y="45" width="30" height="20" rx="3" fill="#A5D6A7" stroke="#388E3C" stroke-width="2"/>
+                        <line x1="100" y1="100" x2="100" y2="140" stroke="white" stroke-width="8" stroke-linecap="round"/>
+                        <line x1="80" y1="120" x2="120" y2="120" stroke="white" stroke-width="8" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <h1 class="title">My medicine box</h1>
+                <button id="open-btn" class="open-btn">Open</button>
+            </div>
+        </div>
+
+        <div id="select-page" class="page">
+            <div class="select-header">
+                <button id="select-edit-btn" class="edit-btn">编辑</button>
+            </div>
+            <div class="select-container">
+                <button id="new-box-btn" class="select-btn">
+                    <span class="btn-icon">➕</span>
+                    新建药箱
+                </button>
+                <div id="box-buttons-container"></div>
+            </div>
+            <button id="back-home-btn" class="back-btn">← 返回</button>
+        </div>
+
+        <div id="medicine-page" class="page">
+            <div class="header">
+                <h2 id="box-title">我的药箱</h2>
+                <button id="edit-btn" class="edit-btn">编辑</button>
+            </div>
+            <div class="table-container">
+                <table id="medicine-table">
+                    <thead>
+                        <tr>
+                            <th>图片</th>
+                            <th>药品名</th>
+                            <th>生产日期</th>
+                            <th>有效期至</th>
+                            <th>如何使用</th>
+                            <th>频率</th>
+                            <th class="action-col hidden">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                    </tbody>
+                </table>
+            </div>
+            <div id="expiry-note" class="expiry-note hidden">
+                <span class="expiry-color-box"></span>
+                <span>药品已过期</span>
+            </div>
+            <button id="add-row-btn" class="add-btn hidden">+ 添加药品</button>
+            <button id="back-select-btn" class="back-btn">← 返回</button>
+        </div>
+    </div>
+    
+    <div id="date-error-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>药品时间输入可能有误</h3>
+            <div class="modal-buttons">
+                <button id="ok-date-error-btn" class="modal-btn confirm">确认</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="name-error-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>请输入正确的名称</h3>
+            <div class="modal-buttons">
+                <button id="ok-name-error-btn" class="modal-btn confirm">确定</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="processing-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>正在处理图片...</h3>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="delete-medicine-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>你确定删除这个药品吗？</h3>
+            <div class="modal-buttons">
+                <button id="cancel-delete-medicine-btn" class="modal-btn cancel">取消</button>
+                <button id="confirm-delete-medicine-btn" class="modal-btn confirm">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="name-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>请命名你的药箱</h3>
+            <input type="text" id="box-name-input" class="name-input" placeholder="输入药箱名称">
+            <div class="modal-buttons">
+                <button id="cancel-name-btn" class="modal-btn cancel">取消</button>
+                <button id="confirm-name-btn" class="modal-btn confirm">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="rename-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>重命名你的药箱</h3>
+            <input type="text" id="rename-input" class="name-input" placeholder="输入新的药箱名称">
+            <div class="modal-buttons">
+                <button id="cancel-rename-btn" class="modal-btn cancel">取消</button>
+                <button id="confirm-rename-btn" class="modal-btn confirm">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="delete-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="delete-message">确认删除xxx吗？</h3>
+            <div class="modal-buttons">
+                <button id="cancel-delete-btn" class="modal-btn cancel">取消</button>
+                <button id="confirm-delete-btn" class="modal-btn confirm">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="duplicate-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>你已拥有此名称的药箱</h3>
+            <div class="modal-buttons">
+                <button id="ok-duplicate-btn" class="modal-btn confirm">好的</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="limit-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>My medicine box最多可以<br>接受五个药箱，不能再新建啦</h3>
+            <div class="modal-buttons">
+                <button id="ok-limit-btn" class="modal-btn confirm">好的</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="usage-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>选择使用方式</h3>
+            <div class="usage-options">
+                <label class="usage-option">
+                    <input type="checkbox" value="口服">
+                    <span>口服</span>
+                </label>
+                <label class="usage-option">
+                    <input type="checkbox" value="外敷">
+                    <span>外敷</span>
+                </label>
+                <label class="usage-option">
+                    <input type="checkbox" value="其他">
+                    <span>其他</span>
+                </label>
+            </div>
+            <div class="modal-buttons">
+                <button id="cancel-usage-btn" class="modal-btn cancel">取消</button>
+                <button id="confirm-usage-btn" class="modal-btn confirm">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
